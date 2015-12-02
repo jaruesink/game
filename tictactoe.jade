@@ -1,0 +1,16 @@
+template(name="tictactoe")
+  section#tictactoe
+    table
+      tr
+        td(data-cell-number="1") {{> Template.dynamic template=cell1}}
+        td(data-cell-number="2") {{> Template.dynamic template=cell2}}
+        td(data-cell-number="3") {{> Template.dynamic template=cell3}}
+      tr
+        td(data-cell-number="4") {{> Template.dynamic template=cell4}}
+        td(data-cell-number="5") {{> Template.dynamic template=cell5}}
+        td(data-cell-number="6") {{> Template.dynamic template=cell6}}
+      tr
+        td(data-cell-number="7") {{> Template.dynamic template=cell7}}
+        td(data-cell-number="8") {{> Template.dynamic template=cell8}}
+        td(data-cell-number="9") {{> Template.dynamic template=cell9}}
+    div#new_game New Game

@@ -1,23 +1,66 @@
-main{
-	padding:30px;
+$darkred: #AB0D2B;
+$darkgreen: #00934B;
+$excolor: $darkred;
+$ohcolor: $darkgreen;
+
+body{padding-top:20px}
+
+header, main{
+	width: 300px;
+	margin: 0 auto;
 }
 
-#ex, #oh{
+header, #new_game{
+	text-align: center;
+	padding:20px 0;
+	background: black;
+	color: #F8F8F8;
+	font-family: Arial;
+	font-size: 28px
+}
+
+#new_game{
+	cursor: pointer;
+}
+
+.ex, .oh{
 	width: 80px;
 	height: 80px;
-	path{fill:black;}
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
+
+.ex path{
+	fill:$excolor;
+}
+
+.oh path{
+	fill:$ohcolor;
 }
 
 #tictactoe{
-	width: 300px;
-	height: 300px;
-	margin: 0 auto;
-	td{border: 1px solid black; width: 100px; height: 100px; vertical-align: middle; text-align: center;
+	td{border: 1px dashed black; width: 100px; height: 100px; position:relative;
+		&:not([data-played=true]):hover{
+			cursor: pointer;
+		}
 		&:first-child{
 			border-left: none;
 		}
 		&:last-child{
 			border-right: none;
+		}
+	}
+	&[data-turn="ex"]{
+		td:not([data-played=true]):hover{
+			background: $excolor;
+			opacity: .2;
+		}
+	}
+	&[data-turn="oh"]{
+		td:not([data-played=true]):hover{
+			background: $ohcolor;
+			opacity: .2;
 		}
 	}
 	tr:first-child{
@@ -26,5 +69,7 @@ main{
 	tr:last-child{
 		td{border-bottom: none;}
 	}
+	&[data-active=true]{
+		#new_game{display:none;}
+	}
 }
-
