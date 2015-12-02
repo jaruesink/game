@@ -38,7 +38,7 @@ $ ->
     moveNumber = 0
     do initialize_game
     cellNumber = 1
-    while i < 10
+    while cellNumber < 10
       place null, cellNumber
       cellNumber++
   set_turn = (ex_or_oh) ->
