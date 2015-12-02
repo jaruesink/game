@@ -37,10 +37,10 @@ $ ->
     unset_played $cell
     moveNumber = 0
     do initialize_game
-    i = 1
+    cellNumber = 1
     while i < 10
-      place null, i
-      i++
+      place null, cellNumber
+      cellNumber++
   set_turn = (ex_or_oh) ->
     $game.attr 'data-turn', ex_or_oh
     $game.data 'turn', ex_or_oh
