@@ -34,28 +34,21 @@ $ ->
       cellGrid[@cellNumber-1]
 
     checkSurroundingCells: ->
-      x = cellGrid[@cellNumber-1][0]
-      y = cellGrid[@cellNumber-1][1]
-      played = cellGrid[@cellNumber-1][2]
-      positions = [
-                    [x-1, y-1, 'top-left'],
-                    [x  , y-1, 'top'],
-                    [x+1, y-1, 'top-right'],
-                    [x-1, y  , 'left'],
-                    [x+1, y  , 'right'],
-                    [x-1, y+1, 'bottom-left'],
-                    [x  , y+1, 'bottom'],
-                    [x+1, y+1, 'bottom-right']
-                  ]
-      what_has_been_played = []
+      x         = cellGrid[@cellNumber-1][0]
+      y         = cellGrid[@cellNumber-1][1]
+      played    = cellGrid[@cellNumber-1][2]
+      what_has_been_played  = []
+      positions = surrounding_positions x, y
+
       whatIsPlayed = (position) ->
         x = position[0]
         y = position[1]
         position_name = position[2]
+
         i = 0
         while i < cellCount
-          grid_x = cellGrid[i][0]
-          grid_y = cellGrid[i][1]
+          grid_x      = cellGrid[i][0]
+          grid_y      = cellGrid[i][1]
           grid_played = cellGrid[i][2]
           if x is grid_x and y is grid_y and grid_played is played
             what_has_been_played.push "an adjacent "+played+" is played to the "+position_name
@@ -66,6 +59,18 @@ $ ->
         return what_has_been_played
       else
         return false
+
+  surrounding_positions = (x, y) ->
+    positions = [
+                  [x-1, y-1, 'top-left'],
+                  [x  , y-1, 'top'],
+                  [x+1, y-1, 'top-right'],
+                  [x-1, y  , 'left'],
+                  [x+1, y  , 'right'],
+                  [x-1, y+1, 'bottom-left'],
+                  [x  , y+1, 'bottom'],
+                  [x+1, y+1, 'bottom-right']
+                ]
 
   game_on = ->
     $game.attr 'data-active', true
