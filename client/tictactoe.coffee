@@ -26,35 +26,47 @@ $ ->
     while i < cellCount
       cellGrid[i] = [i%gridSize, Math.floor(i/gridSize)]
       i++
-  do createCellGrid
-
-  isOdd = (num) ->
-    num % 2
-
-
-
   game_on = ->
     $game.attr 'data-active', true
     $game.data 'active', true
     set_turn 'ex'
     moveNumber = 0
+    do createCellGrid
+    console.log 'starting a new game'
   game_over = ->
     $game.attr 'data-active', false
     $game.data 'active', false
   place = (ex_or_oh, cellNumber) ->
     Session.set 'cell'+cellNumber, ex_or_oh
+    if ex_or_oh then cellGrid[cellNumber-1].push ex_or_oh
+    check_for_win(cellNumber)
+  check_for_win = (cellNumber) ->
+    thisGrid = cellGrid[cellNumber-1]
+    x = thisGrid[0]
+    y = thisGrid[1]
+    positions = [
+      [x-1, y-1],
+      [x  , y-1],
+      [x+1, y-1],
+      [x-1, y  ],
+      [x+1, y  ],
+      [x-1, y+1],
+      [x  , y+1],
+      [x+1, y+1]
+    ]
+
   clear_board = ->
     unset_played $cell
-    do game_on
+    cellGrid = Array(cellCount)
     cellNumber = 1
     while cellNumber < 10
       place null, cellNumber
       cellNumber++
+    do game_on
   set_turn = (ex_or_oh) ->
     $game.attr 'data-turn', ex_or_oh
     $game.data 'turn', ex_or_oh
   switch_turn = ->
-    console.log 'switching the turn from '+$game.data 'turn'
     if $game.data('turn') is 'ex' 
       set_turn 'oh'
     else 
@@ -69,15 +81,14 @@ $ ->
   do game_on
 
   $cell.click ->
-    console.log do $(this).data
     unless $(this).data 'played'
       thisCellNumber = $(this).data('cellNumber')
       if $game.data('turn') is 'ex'
         place 'ex', thisCellNumber
-        console.log 'ex played in cell '+thisCellNumber
+        console.log cellGrid[thisCellNumber-1]
       else
         place 'oh', thisCellNumber
-        console.log 'oh played in cell '+thisCellNumber
+        console.log cellGrid[thisCellNumber-1]
       set_played $(this)
 
       if moveNumber < 8
