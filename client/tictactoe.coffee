@@ -33,7 +33,7 @@ $ ->
     getCoordinates: ->
       cellGrid[@cellNumber-1]
 
-    getSurroundingCells: ->
+    checkSurroundingCells: ->
       x = cellGrid[@cellNumber-1][0]
       y = cellGrid[@cellNumber-1][1]
       played = cellGrid[@cellNumber-1][2]
@@ -48,7 +48,7 @@ $ ->
                     [x+1, y+1, 'bottom-right']
                   ]
       what_has_been_played = []
-      checkPlayed = (position) ->
+      whatIsPlayed = (position) ->
         x = position[0]
         y = position[1]
         position_name = position[2]
@@ -60,7 +60,8 @@ $ ->
           if x is grid_x and y is grid_y and grid_played is played
             what_has_been_played.push "an adjacent "+played+" is played to the "+position_name
           i++
-      checkPlayed position for position in positions
+
+      whatIsPlayed position for position in positions
       if what_has_been_played.length > 0
         return what_has_been_played
       else
@@ -83,7 +84,8 @@ $ ->
       cellGrid[cellNumber-1].push ex_or_oh
       thisCell = new Cell cellNumber
       console.log do thisCell.getCoordinates
-      console.log do thisCell.getSurroundingCells
+      if do thisCell.checkSurroundingCells
+        console.log do thisCell.checkSurroundingCells
   clear_board = ->
     unset_played $cell
     cellGrid = Array(cellCount)
