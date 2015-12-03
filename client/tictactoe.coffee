@@ -46,9 +46,10 @@ $ ->
     console.log 'the game is over'
   place = (ex_or_oh, cellNumber) ->
     Session.set 'cell'+cellNumber, ex_or_oh
-    if ex_or_oh then cellGrid[cellNumber-1].push ex_or_oh
-    thisCell = new Cell cellNumber
-    console.log do thisCell.getCoordinates
+    if ex_or_oh
+      cellGrid[cellNumber-1].push ex_or_oh
+      thisCell = new Cell cellNumber
+      console.log do thisCell.getCoordinates
   clear_board = ->
     unset_played $cell
     cellGrid = Array(cellCount)
