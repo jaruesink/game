@@ -2,7 +2,7 @@
 initiate_cells = ->
   cells = {}
   i = 1
-  while i < 10
+  while i <= 9
     cells['cell' + i] = ((n) ->
       ->
         Session.get 'cell' + n
@@ -33,6 +33,35 @@ $ ->
     getCoordinates: ->
       cellGrid[@cellNumber-1]
 
+    getSurroundingCells: ->
+      x = cellGrid[@cellNumber-1][0]
+      y = cellGrid[@cellNumber-1][1]
+      positions = [
+                    [x-1, y-1, 'top-left'],
+                    [x  , y-1, 'top'],
+                    [x+1, y-1, 'top-right'],
+                    [x-1, y  , 'left'],
+                    [x+1, y  , 'right'],
+                    [x-1, y+1, 'bottom-left'],
+                    [x  , y+1, 'bottom'],
+                    [x+1, y+1, 'bottom-right']
+                  ]
+      what_has_been_played = []
+      checkPlayed = (position) ->
+        x = position[0]
+        y = position[1]
+        position_name = position[2]
+        i = 0
+        while i < cellCount
+          grid_x = cellGrid[i][0]
+          grid_y = cellGrid[i][1]
+          played = cellGrid[i][2]
+          if x is grid_x and y is grid_y and played
+            what_has_been_played.push "an "+played+" is played to the "+position_name
+          i++
+      checkPlayed position for position in positions
+      return what_has_been_played
+
   game_on = ->
     $game.attr 'data-active', true
     $game.data 'active', true
@@ -46,15 +75,16 @@ $ ->
     console.log 'the game is over'
   place = (ex_or_oh, cellNumber) ->
     Session.set 'cell'+cellNumber, ex_or_oh
-    if ex_or_oh
+    if ex_or_oh is 'ex' or 'oh'
       cellGrid[cellNumber-1].push ex_or_oh
       thisCell = new Cell cellNumber
       console.log do thisCell.getCoordinates
+      console.log do thisCell.getSurroundingCells
   clear_board = ->
     unset_played $cell
     cellGrid = Array(cellCount)
     cellNumber = 1
-    while cellNumber < 10
+    while cellNumber <= cellCount
       place null, cellNumber
       cellNumber++
     do game_on
