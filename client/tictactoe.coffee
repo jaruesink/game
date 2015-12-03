@@ -85,7 +85,7 @@ $ ->
     console.log 'the game is over'
   place = (ex_or_oh, cellNumber) ->
     Session.set 'cell'+cellNumber, ex_or_oh
-    if ex_or_oh is 'ex' or 'oh'
+    if ex_or_oh is 'ex' or ex_or_oh is 'oh'
       cellGrid[cellNumber-1].push ex_or_oh
       thisCell = new Cell cellNumber
       console.log do thisCell.getCoordinates
