@@ -36,6 +36,7 @@ $ ->
     getSurroundingCells: ->
       x = cellGrid[@cellNumber-1][0]
       y = cellGrid[@cellNumber-1][1]
+      played = cellGrid[@cellNumber-1][2]
       positions = [
                     [x-1, y-1, 'top-left'],
                     [x  , y-1, 'top'],
@@ -55,12 +56,15 @@ $ ->
         while i < cellCount
           grid_x = cellGrid[i][0]
           grid_y = cellGrid[i][1]
-          played = cellGrid[i][2]
-          if x is grid_x and y is grid_y and played
-            what_has_been_played.push "an "+played+" is played to the "+position_name
+          grid_played = cellGrid[i][2]
+          if x is grid_x and y is grid_y and grid_played is played
+            what_has_been_played.push "an adjacent "+played+" is played to the "+position_name
           i++
       checkPlayed position for position in positions
-      return what_has_been_played
+      if what_has_been_played.length > 0
+        return what_has_been_played
+      else
+        return false
 
   game_on = ->
     $game.attr 'data-active', true
