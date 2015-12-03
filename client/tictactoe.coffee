@@ -23,7 +23,9 @@ $ ->
   $game       = $ '#tictactoe', 'main'
   $cell       = $ 'td', '#tictactoe'
   $new_game   = $ '#new_game', '#tictactoe'
-  moveNumber = 0
+  moveNumber  = 0
+  gridSize    = $('tr').length
+  cellCount   = gridSize*gridSize
 
   isOdd = (num) ->
     num % 2
