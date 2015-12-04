@@ -20,6 +20,7 @@ $ ->
   gridSize    = $('tr').length
   cellCount   = gridSize*gridSize
   cellGrid    = Array(cellCount)
+  what_has_been_played  = new Array
 
   createCellGrid = ->
     i = 0
@@ -37,28 +38,17 @@ $ ->
       x         = cellGrid[@cellNumber-1][0]
       y         = cellGrid[@cellNumber-1][1]
       played    = cellGrid[@cellNumber-1][2]
-      what_has_been_played  = []
       positions = surrounding_positions x, y
+      what_has_been_played = new Array
 
-      whatIsPlayed = (position) ->
-        x = position[0]
-        y = position[1]
-        position_name = position[2]
-
-        i = 0
-        while i < cellCount
-          grid_x      = cellGrid[i][0]
-          grid_y      = cellGrid[i][1]
-          grid_played = cellGrid[i][2]
-          if x is grid_x and y is grid_y and grid_played is played
-            what_has_been_played.push "an adjacent "+played+" is played to the "+position_name
-          i++
-
-      whatIsPlayed position for position in positions
+      whatIsPlayed position, played for position in positions
       if what_has_been_played.length > 0
         return what_has_been_played
       else
         return false
+
+  getCellNumberFromCoordinates = (x, y) ->
+    cellCount*x+y+1
 
   surrounding_positions = (x, y) ->
     positions = [
@@ -71,6 +61,20 @@ $ ->
                   [x  , y+1, 'bottom'],
                   [x+1, y+1, 'bottom-right']
                 ]
+
+  whatIsPlayed = (position, played) ->
+    x = position[0]
+    y = position[1]
+    position_name = position[2]
+
+    i = 0
+    while i < cellCount
+      grid_x      = cellGrid[i][0]
+      grid_y      = cellGrid[i][1]
+      grid_played = cellGrid[i][2]
+      if x is grid_x and y is grid_y and grid_played is played
+        what_has_been_played.push "an adjacent "+played+" is played to the "+position_name
+      i++
 
   game_on = ->
     $game.attr 'data-active', true

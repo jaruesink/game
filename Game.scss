@@ -5,12 +5,12 @@ $ohcolor: $darkgreen;
 
 body{padding-top:20px}
 
-header, main{
+main{
 	width: 300px;
 	margin: 0 auto;
 }
 
-header, #new_game{
+h1, #new_game{
 	text-align: center;
 	padding:20px 0;
 	background: black;
