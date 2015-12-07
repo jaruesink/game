@@ -41,7 +41,7 @@ $ ->
       positions = surrounding_positions x, y
       what_has_been_played = new Array
 
-      whatIsPlayed position, played for position in positions
+      check_adjacent position, played for position in positions
       if what_has_been_played.length > 0
         return what_has_been_played
       else
@@ -62,7 +62,7 @@ $ ->
                   [x+1, y+1, 'bottom-right']
                 ]
 
-  whatIsPlayed = (position, played) ->
+  check_adjacent = (position, played) ->
     x = position[0]
     y = position[1]
     position_name = position[2]
@@ -75,6 +75,14 @@ $ ->
       if x is grid_x and y is grid_y and grid_played is played
         what_has_been_played.push "an adjacent "+played+" is played to the "+position_name
       i++
+
+  check_for_win = (position, played) ->
+    x = position[0]
+    y = position[1]
+    position_name = position[2]
+    cellNumber = getCellNumberFromCoordinates x, y
+    grid_played = cellGrid[cellNumber-1][2]
+    return false
 
   game_on = ->
     $game.attr 'data-active', true
