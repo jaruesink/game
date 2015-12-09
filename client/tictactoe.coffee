@@ -20,7 +20,7 @@ $ ->
   gridSize    = $('tr').length
   cellCount   = gridSize*gridSize
   cellGrid    = Array(cellCount)
-  what_has_been_played  = new Array
+  positions_played  = new Array
 
   createCellGrid = ->
     i = 0
@@ -34,21 +34,24 @@ $ ->
     getCoordinates: ->
       cellGrid[@cellNumber-1]
 
-    checkSurroundingCells: ->
+    check_for_win: ->
       x         = cellGrid[@cellNumber-1][0]
       y         = cellGrid[@cellNumber-1][1]
       played    = cellGrid[@cellNumber-1][2]
       positions = surrounding_positions x, y
-      what_has_been_played = new Array
+      positions_played = []
 
       check_adjacent position, played for position in positions
-      if what_has_been_played.length > 0
-        return what_has_been_played
+      if positions_played.length > 0
+        return positions_played
       else
         return false
 
   getCellNumberFromCoordinates = (x, y) ->
-    cellCount*x+y+1
+    if x is 0
+      y+1
+    else
+      cellCount%x+y+1
 
   surrounding_positions = (x, y) ->
     positions = [
@@ -72,17 +75,16 @@ $ ->
       grid_x      = cellGrid[i][0]
       grid_y      = cellGrid[i][1]
       grid_played = cellGrid[i][2]
-      if x is grid_x and y is grid_y and grid_played is played
-        what_has_been_played.push "an adjacent "+played+" is played to the "+position_name
+      if x is grid_x and y is grid_y and played is grid_played
+        #TODO I need to figure out a good way to break free of my loop
+        if positions_played.indexOf(getCellNumberFromCoordinates x, y) > -1
+          debugger
+          break
+        positions_played.push [position_name, getCellNumberFromCoordinates x, y]
+        console.log positions_played
+        new_positions = surrounding_positions x, y
+        check_adjacent new_position, played for new_position in new_positions
       i++
-
-  check_for_win = (position, played) ->
-    x = position[0]
-    y = position[1]
-    position_name = position[2]
-    cellNumber = getCellNumberFromCoordinates x, y
-    grid_played = cellGrid[cellNumber-1][2]
-    return false
 
   game_on = ->
     $game.attr 'data-active', true
@@ -101,8 +103,7 @@ $ ->
       cellGrid[cellNumber-1].push ex_or_oh
       thisCell = new Cell cellNumber
       console.log do thisCell.getCoordinates
-      if do thisCell.checkSurroundingCells
-        console.log do thisCell.checkSurroundingCells
+      do thisCell.check_for_win
   clear_board = ->
     unset_played $cell
     cellGrid = Array(cellCount)
