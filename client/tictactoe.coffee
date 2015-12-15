@@ -93,10 +93,12 @@ $ ->
     moveNumber = 0
     do createCellGrid
     console.log 'starting a new game'
+
   game_over = ->
     $game.attr 'data-active', false
     $game.data 'active', false
     console.log 'the game is over'
+
   place = (ex_or_oh, cellNumber) ->
     Session.set 'cell'+cellNumber, ex_or_oh
     if ex_or_oh is 'ex' or ex_or_oh is 'oh'
@@ -104,6 +106,7 @@ $ ->
       thisCell = new Cell cellNumber
       console.log do thisCell.getCoordinates
       do thisCell.check_for_win
+
   clear_board = ->
     unset_played $cell
     cellGrid = Array(cellCount)
@@ -112,18 +115,22 @@ $ ->
       place null, cellNumber
       cellNumber++
     do game_on
+
   set_turn = (ex_or_oh) ->
     $game.attr 'data-turn', ex_or_oh
     $game.data 'turn', ex_or_oh
+
   switch_turn = ->
     if $game.data('turn') is 'ex' 
       set_turn 'oh'
     else 
       set_turn 'ex'
     console.log 'it is now '+$game.data('turn')+'\'s turn'
+
   set_played = (cells) ->
     cells.attr 'data-played', true
     cells.data 'played', true
+
   unset_played = (cells) ->
     cells.attr 'data-played', false
     cells.data 'played', false
