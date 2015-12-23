@@ -20,7 +20,7 @@ $ ->
   gridSize    = $('tr').length
   cellCount   = gridSize*gridSize
   cellGrid    = Array(cellCount)
-  positions_played  = new Array
+  checked_positions = new Array
 
   createCellGrid = ->
     i = 0
@@ -29,29 +29,20 @@ $ ->
       i++
 
   class Cell
-    constructor: (@cellNumber) ->
-
-    getCoordinates: ->
-      cellGrid[@cellNumber-1]
+    constructor: (@cellNumber, @ex_or_oh) ->
 
     check_for_win: ->
       x         = cellGrid[@cellNumber-1][0]
       y         = cellGrid[@cellNumber-1][1]
       played    = cellGrid[@cellNumber-1][2]
       positions = surrounding_positions x, y
-      positions_played = []
+      findLeadingConsecutive @cellNumber, @ex_or_oh
 
-      check_adjacent position, played for position in positions
-      if positions_played.length > 0
-        return positions_played
-      else
-        return false
-
-  getCellNumberFromCoordinates = (x, y) ->
-    if x is 0
-      y+1
-    else
-      cellCount%x+y+1
+  getCellNumber = (x, y) ->
+    if y is 0 then x+1 else x%gridSize+gridSize*y+1
+    
+  getCoordinates = (cellNumber) ->
+    cellGrid[cellNumber-1]
 
   surrounding_positions = (x, y) ->
     positions = [
@@ -65,26 +56,32 @@ $ ->
                   [x+1, y+1, 'bottom-right']
                 ]
 
-  check_adjacent = (position, played) ->
-    x = position[0]
-    y = position[1]
-    position_name = position[2]
-
-    i = 0
-    while i < cellCount
-      grid_x      = cellGrid[i][0]
-      grid_y      = cellGrid[i][1]
-      grid_played = cellGrid[i][2]
-      if x is grid_x and y is grid_y and played is grid_played
-        #TODO I need to figure out a good way to break free of my loop
-        if positions_played.indexOf(getCellNumberFromCoordinates x, y) > -1
-          debugger
+  findLeadingConsecutive = (cellNumber, played) ->
+    checked_positions = []
+    coordinates = getCoordinates cellNumber
+    x = coordinates[0]
+    y = coordinates[1]
+    positions = surrounding_positions x, y
+    surrounding_locations = new Array
+    for position in positions
+      surrounding_x = position[0]
+      surrounding_y = position[1]
+      surrounding_number = null
+      if surrounding_x > -1 and surrounding_y > -1 and surrounding_x < cellCount/gridSize and surrounding_y < cellCount/gridSize
+        surrounding_number = getCellNumber surrounding_x, surrounding_y
+        surrounding_played = cellGrid[surrounding_number-1][2]
+        if surrounding_number and surrounding_played is played
+          surrounding_location = position[2]
+          checked_positions.push surrounding_number
           break
-        positions_played.push [position_name, getCellNumberFromCoordinates x, y]
-        console.log positions_played
-        new_positions = surrounding_positions x, y
-        check_adjacent new_position, played for new_position in new_positions
-      i++
+        else
+          surrounding_number = null
+    console.log 'surrounding_number', surrounding_number
+    console.log 'checked_positions', checked_positions
+    # surrounding_number needs to be the next surrounding number position
+    if surrounding_number and checked_positions.indexOf(surrounding_number) < 0
+      findLeadingConsecutive surrounding_number, played
+      console.log 'leading consecutive is', surrounding_number
 
   game_on = ->
     $game.attr 'data-active', true
@@ -103,8 +100,8 @@ $ ->
     Session.set 'cell'+cellNumber, ex_or_oh
     if ex_or_oh is 'ex' or ex_or_oh is 'oh'
       cellGrid[cellNumber-1].push ex_or_oh
-      thisCell = new Cell cellNumber
-      console.log do thisCell.getCoordinates
+      thisCell = new Cell cellNumber, ex_or_oh
+      console.log getCoordinates cellNumber
       do thisCell.check_for_win
 
   clear_board = ->
