@@ -20,7 +20,8 @@ $ ->
   gridSize    = $('tr').length
   cellCount   = gridSize*gridSize
   cellGrid    = Array(cellCount)
-  checked_positions = new Array
+  consecutive_plays = new Array
+  position_names    = new Array
 
   createCellGrid = ->
     i = 0
@@ -36,7 +37,9 @@ $ ->
       y         = cellGrid[@cellNumber-1][1]
       played    = cellGrid[@cellNumber-1][2]
       positions = surrounding_positions x, y
-      findLeadingConsecutive @cellNumber, @ex_or_oh
+      consecutive_plays = []
+      position_names = []
+      consecutive = findConsecutivePlays @cellNumber, @ex_or_oh
 
   getCellNumber = (x, y) ->
     if y is 0 then x+1 else x%gridSize+gridSize*y+1
@@ -56,32 +59,32 @@ $ ->
                   [x+1, y+1, 'bottom-right']
                 ]
 
-  findLeadingConsecutive = (cellNumber, played) ->
-    checked_positions = []
+  findConsecutivePlays = (cellNumber, played) ->
     coordinates = getCoordinates cellNumber
     x = coordinates[0]
     y = coordinates[1]
     positions = surrounding_positions x, y
     surrounding_locations = new Array
+    consecutive_plays.push cellNumber if consecutive_plays.indexOf(cellNumber) < 0
     for position in positions
       surrounding_x = position[0]
       surrounding_y = position[1]
-      surrounding_number = null
+      position_name = position[2]
+      surrounding_number = false
       if surrounding_x > -1 and surrounding_y > -1 and surrounding_x < cellCount/gridSize and surrounding_y < cellCount/gridSize
         surrounding_number = getCellNumber surrounding_x, surrounding_y
         surrounding_played = cellGrid[surrounding_number-1][2]
         if surrounding_number and surrounding_played is played
           surrounding_location = position[2]
-          checked_positions.push surrounding_number
-          break
         else
-          surrounding_number = null
-    console.log 'surrounding_number', surrounding_number
-    console.log 'checked_positions', checked_positions
-    # surrounding_number needs to be the next surrounding number position
-    if surrounding_number and checked_positions.indexOf(surrounding_number) < 0
-      findLeadingConsecutive surrounding_number, played
-      console.log 'leading consecutive is', surrounding_number
+          surrounding_number = false
+        if surrounding_number and consecutive_plays.indexOf(surrounding_number) < 0
+          consecutive_plays.push surrounding_number
+          position_names.push position_name
+          console.log consecutive_plays
+          findConsecutivePlays surrounding_number, played
+    console.log 'position_names', position_names
+    return consecutive_plays
 
   game_on = ->
     $game.attr 'data-active', true
