@@ -37,9 +37,15 @@ $ ->
       played      = cellGrid[@cellNumber-1][2]
       positions   = getSurroundingPositions x, y
       consecutive = findConsecutivePlays @cellNumber, @ex_or_oh
-      win         = checkWin consecutive, @ex_or_oh
+      win         = checkWin @cellNumber, consecutive, @ex_or_oh
       if win
-        console.log 'we have a winner'
+        win.push @cellNumber
+        for winner in win
+          $cell.eq(winner-1).addClass 'winning'
+        $game.attr('data-winner', @ex_or_oh)
+        do game_over
+        console.log 'winning_numbers', win
+        
 
   getCellNumber = (x, y) ->
     if y is 0 then x+1 else x%gridSize+gridSize*y+1
@@ -76,43 +82,65 @@ $ ->
           consecutive_plays.push [surrounding_number, position_name]
     if consecutive_plays.length > 0 then return consecutive_plays else false
     
-  checkWin = (consecutive, played) ->
+  checkWin = (origin, consecutive, played) ->
     win = false
+    winning_numbers = new Array
+    position_names  = new Array
+    origin_coordinates = getCoordinates origin
+    origin_x           = origin_coordinates[0]
+    origin_y           = origin_coordinates[1]
+    origin_positions   = getSurroundingPositions origin_x, origin_y
 
-    position_names = new Array
     for consecutive_play in consecutive
-      consecutive_number   = consecutive_play[0]
-      consecutive_name    = consecutive_play[1]
+      consecutive_number      = consecutive_play[0]
+      consecutive_name        = consecutive_play[1]
       consecutive_coordinates = getCoordinates consecutive_number
-      consecutive_x = consecutive_coordinates[0]
-      consecutive_y = consecutive_coordinates[1]
-      consecutive_positions = getSurroundingPositions consecutive_x, consecutive_y
+      consecutive_x           = consecutive_coordinates[0]
+      consecutive_y           = consecutive_coordinates[1]
+      consecutive_positions   = getSurroundingPositions consecutive_x, consecutive_y
       position_names.push consecutive_name
-      
-      # Check for winning position if middle row is played last.
-      
-      if position_names.length > 1
-        first_position_name = position_names[0]
-        index_of_first_position = false
-        for position_name in position_names
-          for position, index in consecutive_positions
-            if position[2] is first_position_name
-              index_of_first_position = index
-            if position[2] is position_name
-              index_of_next_position  = index
-              if Math.abs(index_of_first_position - index_of_next_position) is 4
-                win = true
 
       # Check for winning position when all in a row.
+      next_consecutives = findConsecutivePlays consecutive_number, played
+      for next_consecutive in next_consecutives
+        next_consecutive_name = next_consecutive[1]
+        if consecutive_name is next_consecutive_name
+          winning_numbers.push next_consecutive[0]
+          winning_numbers.push consecutive_number
+          win = winning_numbers
+        if win
+          break
+      if win
+        break
 
-      unless win
+    unless win
 
-        next_consecutives = findConsecutivePlays consecutive_number, played
-        for next_consecutive in next_consecutives
-          next_consecutive_name = next_consecutive[1]
-          if consecutive_name is next_consecutive_name
-            win = true
-            
+      # Check for winning position if middle row is played last.
+      if position_names.length > 1
+        for position_name in position_names
+          current_position_name  = position_name
+          current_position_index = false
+          current_position_x     = false
+          current_position_y     = false
+          next_position_index    = false
+          for position, index in origin_positions
+            if position[2] is current_position_name
+              current_position_x     = position[0]
+              current_position_y     = position[1]
+              current_position_index = index
+          for position_name in position_names
+            for position, index in origin_positions
+              if position[2] is position_name
+                next_position_index = index
+            if Math.abs(current_position_index - next_position_index) is 4
+              winning_numbers.push getCellNumber current_position_x, current_position_y
+              winning_numbers.push consecutive_number
+              win = winning_numbers
+            if win
+              break
+          if win
+            break
+
     return win
 
   game_on = ->
@@ -137,6 +165,8 @@ $ ->
       do thisCell.check_for_win
 
   clear_board = ->
+    $game.removeAttr 'data-winner'
+    $cell.removeClass 'winning'
     unset_played $cell
     cellGrid = Array(cellCount)
     cellNumber = 1
@@ -167,7 +197,7 @@ $ ->
   do game_on
 
   $cell.click ->
-    unless $(this).data 'played'
+    unless $(this).data('played') or $game.data('active') is false
       thisCellNumber = $(this).data('cellNumber')
       if $game.data('turn') is 'ex'
         place 'ex', thisCellNumber

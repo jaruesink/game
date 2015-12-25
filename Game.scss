@@ -41,26 +41,35 @@ h1, #new_game{
 
 #tictactoe{
 	td{border: 1px dashed black; width: 100px; height: 100px; position:relative;
-		&:not([data-played=true]):hover{
-			cursor: pointer;
-		}
 		&:first-child{
 			border-left: none;
 		}
 		&:last-child{
 			border-right: none;
 		}
-	}
-	&[data-turn="ex"]{
-		td:not([data-played=true]):hover{
-			background: $excolor;
-			opacity: .2;
+		&.winning{
+			z-index: 2;
+			svg{
+				-webkit-filter: drop-shadow( 3px 3px 3px #000 );
+				filter: drop-shadow( 3px 3px 3px #000 );
+			}
 		}
 	}
-	&[data-turn="oh"]{
-		td:not([data-played=true]):hover{
-			background: $ohcolor;
-			opacity: .2;
+	&[data-active="true"]{
+		#new_game{display:none;}
+		&[data-turn="ex"]{
+			td:not([data-played=true]):hover{
+				background: $excolor;
+				opacity: .2;
+				cursor: pointer;
+			}
+		}
+		&[data-turn="oh"]{
+			td:not([data-played=true]):hover{
+				background: $ohcolor;
+				opacity: .2;
+				cursor: pointer;
+			}
 		}
 	}
 	tr:first-child{
@@ -69,7 +78,16 @@ h1, #new_game{
 	tr:last-child{
 		td{border-bottom: none;}
 	}
-	&[data-active=true]{
-		#new_game{display:none;}
+	&[data-winner]{
+		table{position:relative;}
+		table:before{
+			content: '';
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: black;
+			z-index: 1;
+			opacity: .5;
+		}
 	}
 }
