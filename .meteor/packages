@@ -21,3 +21,8 @@ insecure                # Allow all DB writes from clients (for prototyping)
 mquandalle:jade
 fourseven:scss
 coffeescript
+useraccounts:core
+kadira:flow-router
+useraccounts:bootstrap
+accounts-password
+kadira:blaze-layout
