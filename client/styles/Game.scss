@@ -1,7 +1,7 @@
-$darkred: #AB0D2B;
-$darkgreen: #00934B;
-$excolor: $darkred;
-$ohcolor: $darkgreen;
+$red: #d9534f;
+$green: #5cb85c;
+$excolor: $red;
+$ohcolor: $green;
 
 body{padding-top:20px}
 
@@ -34,7 +34,7 @@ h1, footer{
 }
 
 #tictactoe{
-	table{border-top: 1px solid black; border-bottom: 1px solid black;}
+	table{background-color: white; border-radius: 3px;}
 	td{border: 1px dashed black; width: 100px; height: 100px; position:relative;
 		&:first-child{
 			border-left: none;

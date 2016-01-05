@@ -1,6 +1,7 @@
 template(name="tictactoe")
-  section#tictactoe.card
-    h1 Tic-Tac-Toe
+  section#tictactoe.card.card-inverse.card-primary
+    div.card-block
+      h3.card-title.text-xs-center Tic-Tac-Toe
     table
       tr
         td(data-cell-number="1") {{> Template.dynamic template=cell1}}
@@ -15,4 +16,4 @@ template(name="tictactoe")
         td(data-cell-number="8") {{> Template.dynamic template=cell8}}
         td(data-cell-number="9") {{> Template.dynamic template=cell9}}
     footer
-      button#new_game.btn.btn-primary New Game <i class="fa fa-undo"></i>
+      button#new_game.btn.btn-secondary Play Again <i class="fa fa-undo"></i>
