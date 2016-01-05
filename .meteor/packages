@@ -21,3 +21,4 @@ insecure                # Allow all DB writes from clients (for prototyping)
 mquandalle:jade
 fourseven:scss
 coffeescript
+twbs:bootstrap@=4.0.0-alpha.2
