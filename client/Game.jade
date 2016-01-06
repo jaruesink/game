@@ -2,4 +2,5 @@ template(name="game")
   a(href="/")
     button.btn <i class="fa fa-chevron-left"></i>
   | {{> atNavButton}}
-  | {{> Template.dynamic template=game}}
+  main
+    | {{> Template.dynamic template=game}}

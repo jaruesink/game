@@ -181,7 +181,7 @@ $ ->
 
   do game_on
 
-  $cell.click ->
+  $(document).on 'click', $cell, ->
     unless $(this).data('played') or $game.data('active') is false
       thisCellNumber = $(this).data('cellNumber')
       if $game.data('turn') is 'ex'
@@ -196,5 +196,5 @@ $ ->
       else
         do game_over
 
-  $new_game.click ->
+  $(document).on 'click', $new_game, ->
     do clear_board
