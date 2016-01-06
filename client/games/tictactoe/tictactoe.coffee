@@ -1,17 +1,3 @@
-#set up the cells
-initiate_cells = ->
-  cells = {}
-  i = 1
-  while i <= 9
-    cells['cell' + i] = ((n) ->
-      ->
-        Session.get 'cell' + n
-    )(i)
-    i++
-  return cells
-
-Template.tictactoe.helpers do initiate_cells
-
 $ ->
   $game       = $ '#tictactoe', 'main'
   $cell       = $ 'td', '#tictactoe'
@@ -45,7 +31,6 @@ $ ->
         $game.attr('data-winner', @ex_or_oh)
         do game_over
         console.log 'winning_numbers', win
-        
 
   getCellNumber = (x, y) ->
     if y is 0 then x+1 else x%gridSize+gridSize*y+1

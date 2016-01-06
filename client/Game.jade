@@ -1,6 +1,5 @@
-head
-  meta(name="viewport" content="width=device-width, initial-scale=1")
-  title Game
-body
-  main
-    | {{> tictactoe}}
+template(name="game")
+  a(href="/")
+    button.btn <i class="fa fa-chevron-left"></i>
+  | {{> atNavButton}}
+  | {{> Template.dynamic template=game}}
